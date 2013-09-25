@@ -1,0 +1,21 @@
+{
+    "name": "bclibraries/bibliotools",
+    "description": "Random tools useful for working with bibliographic data",
+    "type": "library",
+    "minimum-stability": "dev",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Ben Florin",
+            "email": "benjamin.florin@bc.edu"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "BCLib": "src/"
+        }
+    }
+}
