@@ -104,11 +104,11 @@ class LCCallNumber
             case 'number':
                 return $this->_number;
             case 'cutter_1':
-                return $this->_cutters[0];
+                return isset($this->_cutters[1]) ? $this->_cutters[1] : false;
             case 'cutter_2':
-                return $this->_cutters[1];
+                return isset($this->_cutters[2]) ? $this->_cutters[2] : false;
             case 'cutter_3':
-                return $this->_cutters[2];
+                return isset($this->_cutters[3]) ? $this->_cutters[3] : false;
             case 'remainder':
                 return $this->_remainder;
             default:
