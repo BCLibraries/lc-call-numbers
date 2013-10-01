@@ -41,8 +41,34 @@ class LCCallNumber
 
     public function normalize()
     {
-        $normalized_string = str_pad($this->_letters, 3, LCCallNumber::LOW_SORT_CHAR, STR_PAD_RIGHT);
-        return $normalized_string;
+        $normalized = str_pad($this->_letters, 3, LCCallNumber::LOW_SORT_CHAR, STR_PAD_RIGHT);
+
+        // Only normalize numbers to \d\d\d\d.\d\d
+        list($pre_dec, $post_dec) = explode('.', $this->_number);
+        $pre_dec = substr($pre_dec, 0, 5);
+        $post_dec = substr($post_dec, 0, 3);
+        $normalized .= str_pad($pre_dec, 5, LCCallNumber::LOW_SORT_CHAR, STR_PAD_LEFT);
+        $normalized .= str_pad($post_dec, 3, LCCallNumber::LOW_SORT_CHAR, STR_PAD_RIGHT);
+
+        for ($i = 1; $i <= 3; $i++) {
+            if (isset($this->_cutters[$i])) {
+                $normalized .= $this->_normalizeCutter($i);
+            }
+            else {
+                $normalized .= str_repeat(LCCallNumber::LOW_SORT_CHAR, 4);
+            }
+        }
+
+        $remainder = substr($this->_remainder, 0, 5);
+        $normalized .= str_pad($remainder, 5, LCCallNumber::LOW_SORT_CHAR, STR_PAD_RIGHT);
+
+        return $normalized;
+    }
+
+    protected function _normalizeCutter($number)
+    {
+        $cutter = substr($this->_cutters[$number], 0, 4);
+        return str_pad($cutter, 4, LCCallNumber::LOW_SORT_CHAR, STR_PAD_RIGHT);
     }
 
     public function isValid()
@@ -63,24 +89,9 @@ class LCCallNumber
         $this->_is_parsed = true;
     }
 
-    protected function _setLetters($letters)
-    {
-        $this->_letters = strtoupper($letters);
-    }
-
-    protected function _setNumber($number)
-    {
-        $this->_number = $number;
-    }
-
     protected function _setCutter($index, $cutter)
     {
         $this->_cutters[$index] = $cutter;
-    }
-
-    protected function _setRemainder($remainder)
-    {
-        $this->_remainder = $remainder;
     }
 
     protected function _setInputString($input_string)
@@ -120,10 +131,10 @@ class LCCallNumber
     {
         switch ($name) {
             case 'letters':
-                $this->_setLetters($value);
+                $this->_letters = strtoupper($value);
                 break;
             case 'number':
-                $this->_setNumber($value);
+                $this->_number = $value;
                 break;
             case 'cutter_1':
                 $this->_setCutter(1, $value);
@@ -135,7 +146,7 @@ class LCCallNumber
                 $this->_setCutter(3, $value);
                 break;
             case 'remainder':
-                $this->_setRemainder(3);
+                $this->_remainder = $value;
                 break;
             case 'input_string':
                 $this->_setInputString($value);
