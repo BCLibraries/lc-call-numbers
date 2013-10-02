@@ -106,14 +106,14 @@ class LCCallNumber
           \.? \s*
               ([A-Z])      # cutter letter
               \s*
-              (\d+\w | \Z)?        # cutter numbers
+              (\d+[\w|\Z]|\d)?        # cutter numbers
         )?
         \s*
         (?:               # optional cutter
           \.? \s*
               ([A-Z])      # cutter letter
               \s*
-              (\d+\w | \Z)?        # cutter numbers
+              (\d+[\w|\Z]|\d)?        # cutter numbers
         )?
         (\s+.+?)?        # everthing else
             \s*$
@@ -133,7 +133,7 @@ REGEX;
         $this->_cutters[1] = $this->_buildCutter(5, 6);
         $this->_cutters[2] = $this->_buildCutter(7, 8);
         $this->_cutters[3] = $this->_buildCutter(9, 10);
-        $this->_remainder = isset($this->_matches[11]) ? $this->_matches[11] : false;
+        $this->_remainder = isset($this->_matches[11]) ? trim($this->_matches[11]) : false;
 
         $this->_is_valid = ($this->_letters && preg_match(
                 '/^[A-Z]/',
