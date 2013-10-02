@@ -107,4 +107,32 @@ class LCCallNumberTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('B8', $this->_cno->cutter_2);
         $this->assertEquals('1920', $this->_cno->remainder);
     }
+
+    public function testOneCutterNormalization()
+    {
+        $this->_cno->parse('PS 379 .L5');
+        $expected = 'PS   379          L5                  ';
+        $this->assertEquals($expected, $this->_cno->normalize());
+    }
+
+    public function testTwoCutterNormalization()
+    {
+        $this->_cno->parse('BX4700.F5 C21');
+        $expected = 'BX  4700          F5   C21            ';
+        $this->assertEquals($expected, $this->_cno->normalize());
+    }
+
+    public function testThreeCutterNormalization()
+    {
+        $this->_cno->parse('BR65.A6 E5 O8');
+        $expected = 'BR    65          A6   E5   O8        ';
+        $this->assertEquals($expected, $this->_cno->normalize());
+    }
+
+    public function testRemainderNormalization()
+    {
+        $this->_cno->parse('KKM110 .B9 N8 1869 Hoeflich Collection');
+        $expected = 'KKM  110          B9   N8        1869 ';
+        $this->assertEquals($expected, $this->_cno->normalize());
+    }
 }
