@@ -122,23 +122,23 @@ REGEX;
         $this->_matches = array_fill(0, 12, '');
         preg_match($lccregex, $input_string, $this->_matches);
 
-        $this->letters = isset($this->_matches[1]) ? $this->_matches[1] : false;
-        $this->number = isset($this->_matches[2]) ? $this->_matches[2] : false;
+        $this->_letters = isset($this->_matches[1]) ? $this->_matches[1] : false;
+        $this->_number = isset($this->_matches[2]) ? $this->_matches[2] : false;
         if (isset($this->_matches[3])) {
-            $this->number .= "." . $this->_matches[3];
+            $this->_number .= "." . $this->_matches[3];
         }
 
-        $this->class_year = isset($this->_matches[4]) ? $this->_matches[4] : false;
+        $this->_class_year = isset($this->_matches[4]) ? $this->_matches[4] : false;
 
-        $this->cutter_1 = $this->_buildCutter(5, 6);
-        $this->cutter_2 = $this->_buildCutter(7, 8);
-        $this->cutter_3 = $this->_buildCutter(9, 10);
-        $this->remainder = isset($this->_matches[11]) ? $this->_matches[11] : false;
+        $this->_cutters[1] = $this->_buildCutter(5, 6);
+        $this->_cutters[2] = $this->_buildCutter(7, 8);
+        $this->_cutters[3] = $this->_buildCutter(9, 10);
+        $this->_remainder = isset($this->_matches[11]) ? $this->_matches[11] : false;
 
-        $this->_is_valid = ($this->letters && preg_match(
+        $this->_is_valid = ($this->_letters && preg_match(
                 '/^[A-Z]/',
-                $this->letters
-            ) && $this->number && $this->cutter_1);
+                $this->_letters
+            ) && $this->_number && $this->_cutters[1]);
     }
 
     protected function _buildCutter($letter_index, $number_index)
@@ -149,28 +149,20 @@ REGEX;
         return false;
     }
 
-    protected function _setCutter($index, $cutter)
-    {
-        $this->_cutters[$index] = $cutter;
-    }
-
     public function __get($name)
     {
         switch ($name) {
             case 'letters':
-                return $this->_letters;
             case 'number':
-                return $this->_number;
-            case 'class_year':
-                return $this->_class_year;
-            case 'cutter_1':
-                return isset($this->_cutters[1]) ? $this->_cutters[1] : false;
-            case 'cutter_2':
-                return isset($this->_cutters[2]) ? $this->_cutters[2] : false;
-            case 'cutter_3':
-                return isset($this->_cutters[3]) ? $this->_cutters[3] : false;
             case 'remainder':
-                return $this->_remainder;
+            case 'class_year':
+                $property = '_' . $name;
+                return $this->$property;
+            case 'cutter_1':
+            case 'cutter_2':
+            case 'cutter_3':
+                $number = substr($name, -1);
+                return isset($this->_cutters[$number]) ? $this->_cutters[$number] : false;
             default:
                 throw new \Exception("$name is not a LCCN property");
         }
@@ -183,23 +175,16 @@ REGEX;
                 $this->_letters = strtoupper($value);
                 break;
             case 'number':
-                $this->_number = $value;
-                break;
             case 'class_year':
-                $this->_class_year = $value;
+            case 'remainder':
+                $property = '_' . $name;
+                $this->$property = $value;
                 break;
             case 'cutter_1':
-                $this->_setCutter(1, $value);
-                break;
             case 'cutter_2':
-                $this->_setCutter(2, $value);
-                break;
             case 'cutter_3':
-                $this->_setCutter(3, $value);
-                break;
-            case 'remainder':
-                $this->_remainder = $value;
-                break;
+                $number = substr($name, -1);
+                $this->_cutters[$number] = $value;
         }
     }
 }
