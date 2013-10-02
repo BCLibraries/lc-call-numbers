@@ -40,4 +40,14 @@ class LCCallNumberTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('P37', $this->_cno->cutter_2);
         $this->assertEquals('A73', $this->_cno->cutter_3);
     }
+
+    public function testCallNumberWithYear()
+    {
+        $this->_cno->parse('BX830 1545 .O43 2013');
+        $this->assertEquals('BX', $this->_cno->letters);
+        $this->assertEquals('830', $this->_cno->number);
+        $this->assertEquals('1545', $this->_cno->class_year);
+        $this->assertEquals('O43', $this->_cno->cutter_1);
+        $this->assertEquals('2013', $this->_cno->remainder);
+    }
 }

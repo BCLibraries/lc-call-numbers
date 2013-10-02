@@ -11,6 +11,7 @@ namespace BCLib\BiblioTools\LCC;
  *
  * @property string      letters
  * @property string      number
+ * @property string      class_year
  * @property string      cutter_1
  * @property string      cutter_2
  * @property string      cutter_3
@@ -22,6 +23,7 @@ class LCCallNumber
 
     protected $_letters;
     protected $_number;
+    protected $_class_year;
     protected $_cutters = array();
     protected $_remainder;
 
@@ -125,6 +127,9 @@ REGEX;
         if (isset($this->_matches[3])) {
             $this->number .= "." . $this->_matches[3];
         }
+
+        $this->class_year = isset($this->_matches[4]) ? $this->_matches[4] : false;
+
         $this->cutter_1 = $this->_buildCutter(5, 6);
         $this->cutter_2 = $this->_buildCutter(7, 8);
         $this->cutter_3 = $this->_buildCutter(9, 10);
@@ -156,6 +161,8 @@ REGEX;
                 return $this->_letters;
             case 'number':
                 return $this->_number;
+            case 'class_year':
+                return $this->_class_year;
             case 'cutter_1':
                 return isset($this->_cutters[1]) ? $this->_cutters[1] : false;
             case 'cutter_2':
@@ -177,6 +184,9 @@ REGEX;
                 break;
             case 'number':
                 $this->_number = $value;
+                break;
+            case 'class_year':
+                $this->_class_year = $value;
                 break;
             case 'cutter_1':
                 $this->_setCutter(1, $value);
