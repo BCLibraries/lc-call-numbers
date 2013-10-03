@@ -135,4 +135,11 @@ class LCCallNumberTest extends \PHPUnit_Framework_TestCase
         $expected = 'KKM  110          B9   N8        1869 ';
         $this->assertEquals($expected, $this->_cno->normalize());
     }
+
+    public function testHighSortCharSortsHigh()
+    {
+        $this->_cno->parse('KKM110 .B9 N8 1869 Hoeflich Collection');
+        $expected = 'KKM  110~~~~~~~~~~B9~~~N8~~~~~~~~1869 ';
+        $this->assertEquals($expected, $this->_cno->normalize(LCCallNumber::HI_SORT_CHAR));
+    }
 }

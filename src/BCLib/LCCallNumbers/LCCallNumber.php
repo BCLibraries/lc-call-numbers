@@ -37,50 +37,50 @@ class LCCallNumber
     const HI_SORT_CHAR = '~';
     const LOW_SORT_CHAR = ' ';
 
-    public function normalize()
+    public function normalize($sort_char = LCCallNumber::LOW_SORT_CHAR)
     {
-        return str_pad($this->_letters, 3, LCCallNumber::LOW_SORT_CHAR, STR_PAD_RIGHT) .
-        $this->_normalizeNumber() .
-        $this->_normalizeClassYear() .
-        $this->_normalizeCutters() .
-        $this->_normalizeRemainder();
+        return str_pad($this->_letters, 3, $sort_char, STR_PAD_RIGHT) .
+        $this->_normalizeNumber($sort_char) .
+        $this->_normalizeClassYear($sort_char) .
+        $this->_normalizeCutters($sort_char) .
+        $this->_normalizeRemainder($sort_char);
     }
 
-    protected function _normalizeNumber()
+    protected function _normalizeNumber($sort_char)
     {
         // Only normalize numbers to \d\d\d\d.\d\d\d\d\d
         list($pre_dec, $post_dec) = explode('.', $this->_number);
         $pre_dec = substr($pre_dec, 0, 5);
         $post_dec = substr($post_dec, 0, 5);
         $normalized = str_pad($pre_dec, 5, LCCallNumber::LOW_SORT_CHAR, STR_PAD_LEFT);
-        return $normalized . str_pad($post_dec, 5, LCCallNumber::LOW_SORT_CHAR, STR_PAD_RIGHT);
+        return $normalized . str_pad($post_dec, 5, $sort_char, STR_PAD_RIGHT);
     }
 
-    protected function _normalizeClassYear()
+    protected function _normalizeClassYear($sort_char)
     {
         $class_year = substr($this->_class_year, 0, 5);
-        return str_pad($class_year, 5, LCCallNumber::LOW_SORT_CHAR, STR_PAD_RIGHT);
+        return str_pad($class_year, 5, $sort_char, STR_PAD_RIGHT);
     }
 
-    protected function _normalizeCutters()
+    protected function _normalizeCutters($sort_char)
     {
         $normalized = '';
 
         for ($i = 1; $i <= 3; $i++) {
             if (isset($this->_cutters[$i])) {
                 $cutter = substr($this->_cutters[$i], 0, 5);
-                $normalized .= str_pad($cutter, 5, LCCallNumber::LOW_SORT_CHAR, STR_PAD_RIGHT);
+                $normalized .= str_pad($cutter, 5, $sort_char, STR_PAD_RIGHT);
             } else {
-                $normalized .= str_repeat(LCCallNumber::LOW_SORT_CHAR, 5);
+                $normalized .= str_repeat($sort_char, 5);
             }
         }
         return $normalized;
     }
 
-    protected function _normalizeRemainder()
+    protected function _normalizeRemainder($sort_char)
     {
         $remainder = substr($this->_remainder, 0, 5);
-        return str_pad($remainder, 5, LCCallNumber::LOW_SORT_CHAR, STR_PAD_RIGHT);
+        return str_pad($remainder, 5, $sort_char, STR_PAD_RIGHT);
     }
 
     public function isValid()
