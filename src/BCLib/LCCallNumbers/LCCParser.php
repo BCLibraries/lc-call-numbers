@@ -1,6 +1,6 @@
 <?php
 
-namespace BCLib\BiblioTools\LCC;
+namespace BCLib\LCCallNumbers;
 
 interface LCCParser
 {

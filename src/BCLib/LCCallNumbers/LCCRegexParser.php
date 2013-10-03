@@ -1,10 +1,10 @@
 <?php
 
-namespace BCLib\BiblioTools\LCC;
+namespace BCLib\LCCallNumbers;
 
 /**
  * Class LCCParser
- * @package BCLib\BiblioTools\LCC
+ * @package BCLib\LCCallNumbers
  *
  * Call number regular expression lifted from Bill Dueber
  * https://code.google.com/p/library-callnumber-lc/wiki/Home

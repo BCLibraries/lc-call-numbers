@@ -1,10 +1,10 @@
 <?php
 
-namespace BCLib\BiblioTools\LCC;
+namespace BCLib\LCCallNumbers;
 
 /**
  * Class LCCN
- * @package BCLib\BiblioTools\LCC
+ * @package BCLib\LCCallNumbers
  *
  * Parses and normalizes Library of Congress Call Numbers, using an
  * implementaiton shamelessly stolen from Bill Deuber.

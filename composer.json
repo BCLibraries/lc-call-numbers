@@ -1,6 +1,6 @@
 {
-    "name": "bclibraries/bibliotools",
-    "description": "Random tools useful for working with bibliographic data",
+    "name": "bclibraries/lc-call-numbers",
+    "description": "Parses and normalizes Library of Congress call numbers",
     "type": "library",
     "minimum-stability": "dev",
     "license": "proprietary",
