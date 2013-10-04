@@ -142,4 +142,46 @@ class LCCallNumberTest extends \PHPUnit_Framework_TestCase
         $expected = 'KKM  110~~~~~~~~~~B9~~~N8~~~~~~~~1869 ';
         $this->assertEquals($expected, $this->_cno->normalize(LCCallNumber::HI_SORT_CHAR));
     }
+
+    public function testSortOrder()
+    {
+        $original = array(
+            'LB2328 .C63 1992',
+            'LB2328 .C554',
+            'LA2301 .M37',
+            'LA2301.23 .M37',
+            'LB2307 .M3',
+            'LB2328 .C63',
+            'LB2327 .Y53',
+            'LA2301.231 .M37',
+            'LB2328 .B37',
+            'LB2328 .C63 1987',
+            'LB2328 .C24',
+            'LB2328 .C55',
+            'LB2328 .C63 T65'
+        );
+        $expected = array(
+            'LA2301 .M37',
+            'LA2301.23 .M37',
+            'LA2301.231 .M37',
+            'LB2307 .M3',
+            'LB2327 .Y53',
+            'LB2328 .B37',
+            'LB2328 .C24',
+            'LB2328 .C55',
+            'LB2328 .C554',
+            'LB2328 .C63',
+            'LB2328 .C63 1987',
+            'LB2328 .C63 1992',
+            'LB2328 .C63 T65'
+        );
+        $results = array();
+        foreach ($original as $number) {
+            $cno = new LCCallNumber();
+            $cno->parse($number);
+            $results[$cno->normalize()] = $number;
+        }
+        ksort($results);
+        $this->assertEquals($expected, array_values($results));
+    }
 }
