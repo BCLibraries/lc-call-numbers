@@ -35,7 +35,7 @@ class LCCallNumber
     protected $_matches = array();
 
     const HI_SORT_CHAR = '~';
-    const LOW_SORT_CHAR = ' ';
+    const LOW_SORT_CHAR = '!';
 
     public function normalize($sort_char = LCCallNumber::LOW_SORT_CHAR)
     {
