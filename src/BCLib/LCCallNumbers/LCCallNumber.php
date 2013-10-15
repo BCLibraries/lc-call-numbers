@@ -46,6 +46,13 @@ class LCCallNumber
         $this->_normalizeRemainder($sort_char);
     }
 
+    public function normalizeClass($sort_char = LCCallNumber::LOW_SORT_CHAR)
+    {
+        return str_pad($this->_letters, 3, $sort_char, STR_PAD_RIGHT) .
+        $this->_normalizeNumber($sort_char) .
+        $this->_normalizeCutters($sort_char, 1);
+    }
+
     protected function _normalizeNumber($sort_char)
     {
         // Only normalize numbers to \d\d\d\d.\d\d\d\d\d
@@ -62,11 +69,11 @@ class LCCallNumber
         return str_pad($class_year, 5, $sort_char, STR_PAD_RIGHT);
     }
 
-    protected function _normalizeCutters($sort_char)
+    protected function _normalizeCutters($sort_char, $num_cutters = 3)
     {
         $normalized = '';
 
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= $num_cutters; $i++) {
             if (isset($this->_cutters[$i])) {
                 $cutter = substr($this->_cutters[$i], 0, 5);
                 $normalized .= str_pad($cutter, 5, $sort_char, STR_PAD_RIGHT);
