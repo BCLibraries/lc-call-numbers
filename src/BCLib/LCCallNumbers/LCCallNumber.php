@@ -52,6 +52,16 @@ class LCCallNumber
         $this->_normalizeCutters($sort_char, 1);
     }
 
+    public function isValid()
+    {
+        return ($this->letters && preg_match(
+                '/^[A-Z]/',
+                $this->letters
+            ))
+            && $this->number
+            && $this->cutter_1;
+    }
+
     protected function _normalizeNumber($sort_char)
     {
         // Only normalize numbers to \d\d\d\d.\d\d\d\d\d
@@ -87,11 +97,6 @@ class LCCallNumber
     {
         $remainder = substr($this->_remainder, 0, 5);
         return str_pad($remainder, 5, $sort_char, STR_PAD_RIGHT);
-    }
-
-    public function isValid()
-    {
-        return $this->_is_valid;
     }
 
     public function __get($name)

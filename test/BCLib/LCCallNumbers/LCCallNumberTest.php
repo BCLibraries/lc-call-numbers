@@ -34,7 +34,7 @@ class LCCallNumberTest extends \PHPUnit_Framework_TestCase
 
     public function testThreeCutterNormalization()
     {
-        $this->_cno->letters='BR';
+        $this->_cno->letters = 'BR';
         $this->_cno->number = '65';
         $this->_cno->cutter_1 = 'A6';
         $this->_cno->cutter_2 = 'E5';
@@ -71,7 +71,37 @@ class LCCallNumberTest extends \PHPUnit_Framework_TestCase
         $this->_cno->number = '110';
         $this->_cno->cutter_1 = 'B9';
         $this->_cno->cutter_2 = 'N8';
-        $this->_cno->remainder = '1869 Hoeflich Collection';        $expected = 'KKM!!110~~~~~B9~~~';
+        $this->_cno->remainder = '1869 Hoeflich Collection';
+        $expected = 'KKM!!110~~~~~B9~~~';
         $this->assertEquals($expected, $this->_cno->normalizeClass(LCCallNumber::HI_SORT_CHAR));
+    }
+
+    public function testNoLettersIsInvalid()
+    {
+        $this->_cno->number = '123';
+        $this->_cno->cutter_1 = 'F3';
+        $this->assertFalse($this->_cno->isValid());
+    }
+
+    public function testNoNumberIsInvalid()
+    {
+        $this->_cno->letters = 'BX';
+        $this->_cno->cutter_1 = 'F4';
+        $this->assertFalse($this->_cno->isValid());
+    }
+
+    public function testNoCutter1IsInvalid()
+    {
+        $this->_cno->letters = 'PS';
+        $this->_cno->number = '1424';
+        $this->assertFalse($this->_cno->isValid());
+    }
+
+    public function testMinimalValidCallNumberIsValid()
+    {
+        $this->_cno->letters = 'BX';
+        $this->_cno->number = '131';
+        $this->_cno->cutter_1 = 'F4';
+        $this->assertTrue($this->_cno->isValid());
     }
 }

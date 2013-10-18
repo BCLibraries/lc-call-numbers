@@ -70,12 +70,6 @@ REGEX;
         $call->remainder = isset($this->_matches[11]) ? trim($this->_matches[11]) : false;
 
         $this->_matches = array();
-
-        return ($call->letters && preg_match(
-                '/^[A-Z]/',
-                $call->letters
-            ) && $call->number && $call->cutter_1);
-
     }
 
     protected function _buildCutter($letter_index, $number_index)
