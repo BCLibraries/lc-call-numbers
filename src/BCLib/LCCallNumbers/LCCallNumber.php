@@ -3,11 +3,12 @@
 namespace BCLib\LCCallNumbers;
 
 /**
+ * Represents a Library of Congress call number
+ *
+ * Handles call number validation and normalization.
+ *
  * Class LCCN
  * @package BCLib\LCCallNumbers
- *
- * Parses and normalizes Library of Congress Call Numbers, using an
- * implementaiton shamelessly stolen from Bill Deuber.
  *
  * @property string      letters
  * @property string      number
@@ -32,8 +33,6 @@ class LCCallNumber
 
     protected $_is_valid = false;
 
-    protected $_matches = array();
-
     const HI_SORT_CHAR = '~';
     const LOW_SORT_CHAR = '!';
 
@@ -56,9 +55,9 @@ class LCCallNumber
     protected function _normalizeNumber($sort_char)
     {
         // Only normalize numbers to \d\d\d\d.\d\d\d\d\d
-        list($pre_dec, $post_dec) = explode('.', $this->_number);
-        $pre_dec = substr($pre_dec, 0, 5);
-        $post_dec = substr($post_dec, 0, 5);
+        $num_parts = explode('.', $this->_number);
+        $pre_dec = substr($num_parts[0], 0, 5);
+        $post_dec = isset($num_parts[1]) ? substr($num_parts[1], 0, 5) : '';
         $normalized = str_pad($pre_dec, 5, LCCallNumber::LOW_SORT_CHAR, STR_PAD_LEFT);
         return $normalized . str_pad($post_dec, 5, $sort_char, STR_PAD_RIGHT);
     }
@@ -93,74 +92,6 @@ class LCCallNumber
     public function isValid()
     {
         return $this->_is_valid;
-    }
-
-    public function parse($input_string)
-    {
-
-        $lccregex = <<<REGEX
-        /^\s*
-        ([A-Z]{1,3})  # alpha
-        \s*
-        (?:         # optional numbers with optional decimal point
-          (\d+)
-          (?:\s*?\.\s*?(\d+))?
-        )?
-        \s*
-        (\d+[stndrh]*)? # optional extra numbering including suffixes (1st, 2nd, etc.)
-            \s*
-            (?:               # optional cutter
-          \.? \s*
-              ([A-Z])      # cutter letter
-              \s*
-              (\d+\w? | \Z)??        # cutter numbers
-        )?
-        \s*
-        (?:               # optional cutter
-          \.? \s*
-              ([A-Z])      # cutter letter
-              \s*
-              (\d+[\w|\Z]|\d)?        # cutter numbers
-        )?
-        \s*
-        (?:               # optional cutter
-          \.? \s*
-              ([A-Z])      # cutter letter
-              \s*
-              (\d+[\w|\Z]|\d)?        # cutter numbers
-        )?
-        (\s+.+?)?        # everthing else
-            \s*$
-  /x
-REGEX;
-        $this->_matches = array_fill(0, 12, '');
-        preg_match($lccregex, $input_string, $this->_matches);
-
-        $this->_letters = isset($this->_matches[1]) ? $this->_matches[1] : false;
-        $this->_number = isset($this->_matches[2]) ? $this->_matches[2] : false;
-        if (isset($this->_matches[3])) {
-            $this->_number .= "." . $this->_matches[3];
-        }
-
-        $this->_class_year = isset($this->_matches[4]) ? $this->_matches[4] : false;
-
-        $this->_cutters[1] = $this->_buildCutter(5, 6);
-        $this->_cutters[2] = $this->_buildCutter(7, 8);
-        $this->_cutters[3] = $this->_buildCutter(9, 10);
-        $this->_remainder = isset($this->_matches[11]) ? trim($this->_matches[11]) : false;
-
-        $this->_is_valid = ($this->_letters && preg_match(
-                '/^[A-Z]/',
-                $this->_letters
-            ) && $this->_number && $this->_cutters[1]);
-    }
-
-    protected function _buildCutter($letter_index, $number_index)
-    {
-        if (isset($this->_matches[$letter_index]) && isset($this->_matches[$number_index])) {
-            return $this->_matches[$letter_index] . $this->_matches[$number_index];
-        }
-        return false;
     }
 
     public function __get($name)
